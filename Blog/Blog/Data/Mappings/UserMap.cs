@@ -1,7 +1,6 @@
 ﻿using Blog.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Collections.Generic;
 
 namespace Blog.Data.Mappings
 {
@@ -27,10 +26,22 @@ namespace Blog.Data.Mappings
                 .HasColumnType("VARCHAR")
                 .HasMaxLength(80);
 
-            builder.Property(x => x.Bio);
-            builder.Property(x => x.Email);
-            builder.Property(x => x.Image);
-            builder.Property(x => x.PasswordHash);
+            builder.Property(x => x.Bio)
+                .IsRequired(false);
+
+            builder.Property(x => x.Email)
+                .IsRequired()
+                .HasColumnName("Email")
+                .HasColumnType("VARCHAR")
+                .HasMaxLength(160);
+
+            builder.Property(x => x.Image)
+                .IsRequired(false);
+
+            builder.Property(x => x.PasswordHash)
+                .HasColumnName("PasswordHash")
+                .HasColumnType("VARCHAR")
+                .HasMaxLength(255);
 
             builder.HasIndex(x => x.Slug, "IX_User_Slug")
                 .IsUnique();
