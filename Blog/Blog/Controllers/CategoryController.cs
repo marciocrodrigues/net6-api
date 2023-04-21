@@ -5,6 +5,7 @@ using Blog.ViewModels.Categories;
 using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Blog.Controllers
 {
@@ -24,19 +25,24 @@ namespace Blog.Controllers
         {
             try
             {
-                var categories = await _context.Categories
-                .AsNoTracking()
-                .ToListAsync();
+                var categories = await GetCategories();
 
                 if (categories.Any())
                     return Ok(new ResultViewModel<List<Category>>(categories));
 
                 return NotFound();
             }
-            catch
+            catch(Exception ex)
             {
-                return StatusCode(500, new ResultViewModel<List<Category>>("Falha interna no servidor"));
+                return StatusCode(500, new ResultViewModel<List<Category>>($"Falha interna no servidor: {ex.Message} - {_context.Database.GetConnectionString()}"));
             }
+        }
+
+        private async Task<List<Category>> GetCategories()
+        {
+            return await _context.Categories
+                            .AsNoTracking()
+                            .ToListAsync();
         }
 
         [HttpGet("v1/categories/{id:int}")]

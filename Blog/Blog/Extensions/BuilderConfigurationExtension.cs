@@ -9,9 +9,6 @@ namespace Blog.Extensions
 {
     public static class BuilderConfigurationExtension
     {
-        private static string CONNECTION_STRING_ID = Environment.GetEnvironmentVariable("CONNECTION_STRING_SQL_SERVER_ID", EnvironmentVariableTarget.Machine);
-        private static string CONNECTION_STRING_PASSWORD = Environment.GetEnvironmentVariable("CONNECTION_STRING_SQL_SERVER_PASSWORD", EnvironmentVariableTarget.Machine);
-
         public static WebApplicationBuilder LoadConfiguration(this WebApplicationBuilder builder)
         {
             Configuration.JwtKey = builder.Configuration.GetValue<string>("JwtKey");
@@ -87,9 +84,7 @@ namespace Blog.Extensions
         {
             service.AddDbContext<BlogDataContext>(options =>
                 options.UseSqlServer(configuration
-                    .GetValue<string>("ConnectionString")
-                    .Replace("CONNECTION_STRING_ID", CONNECTION_STRING_ID)
-                    .Replace("CONNECTION_STRING_PASSWORD", CONNECTION_STRING_PASSWORD))
+                    .GetValue<string>("ConnectionString"))
             );
 
             return service;
